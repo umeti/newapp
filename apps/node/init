@@ -1,0 +1,33 @@
+#!/bin/bash
+
+depends=(
+  axios 
+  dateformat
+)
+
+
+readme=$(cat <<EOF
+sub("{APPNAME}","${PWD##*/}");
+
+EOF
+)
+
+prefix=node/
+files=(
+  .gitignore
+  README.md
+)
+
+#-------------------------------#
+
+for f in "${files[@]}";do
+  echo fetch $f
+  curl -fsSL "https://cdn.jsdelivr.net/gh/umeti/newapp@master/apps/$prefix$f" > "$f"
+  if [ $f == README.md ]; then
+    awk  '{'$awk_expr';print $0}'  $f > $f.bak
+    mv $f.bak $f
+  fi
+done 
+
+yarn init -py && yarn add "${depends[@]}"
+
